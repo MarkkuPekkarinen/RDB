@@ -27,9 +27,9 @@ jobs:
         run: |
           echo "## ✨ What's New" > changelog.md
           if git describe --tags --abbrev=0 HEAD^ > /dev/null 2>&1; then
-            git log --pretty=format:"- %s (%h)" $(git describe --tags --abbrev=0 HEAD^)..HEAD >> changelog.md
+            git log --pretty=format:"%s (%h)" $(git describe --tags --abbrev=0 HEAD^)..HEAD >> changelog.md
           else
-            git log --pretty=format:"- %s (%h)" --max-count=20 >> changelog.md
+            git log --pretty=format:"%s (%h)" --max-count=20 >> changelog.md
           fi
           content=$(cat changelog.md)
           echo "content=$content" >> $GITHUB_OUTPUT
