@@ -1,9 +1,8 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - 'v*'
+  release:
+    types: [published]
 
 permissions:
   contents: write
@@ -22,6 +21,14 @@ jobs:
       - name: Get version from tag
         id: get_version
         run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Generate Changelog
+        id: changelog
+        uses: orhun/git-cliff-action@v2
+        with:
+          args: --latest --strip header
+        env:
+          OUTPUT: CHANGELOG.md
 
       - name: Create Release
         id: create_release
@@ -129,30 +136,9 @@ jobs:
             
             ---
             
-            ## ✨ What's New in v${{ steps.get_version.outputs.version }}
+            ## ✨ What's New
             
-            ### Features
-            - ✅ Complete CRUD operations (CREATE, SELECT, INSERT, UPDATE, DELETE, DROP)
-            - ✅ 8 WHERE operators (=, !=, >, <, >=, <=, LIKE, IN)
-            - ✅ ORDER BY, LIMIT, OFFSET support
-            - ✅ Batch operations
-            - ✅ Multi-layer caching (Query cache + Buffer pool + B+ tree)
-            - ✅ JWT authentication with role-based access control
-            - ✅ Dynamic configuration via config.toml
-            - ✅ CLI management tools
-            - ✅ Database auto-discovery
-            - ✅ Comprehensive documentation
-            
-            ### Performance
-            - ⚡ **100,000 queries/second** (cached SELECT)
-            - 📊 **90-98% cache hit rate**
-            - 🚀 **10-50x faster** JSON parsing vs SQL
-            - 💾 **O(log N)** indexed lookups
-            
-            ### Testing
-            - ✅ **45 tests passing** (100% success rate)
-            - ✅ Zero compilation errors
-            - ✅ ACID compliant
+            ${{ steps.changelog.outputs.content }}
             
             ---
             
@@ -213,9 +199,6 @@ jobs:
             ---
             
             **Full documentation:** https://github.com/muhammad-fiaz/rdb/tree/main/docs
-          draft: false
-          prerelease: false
-
   build-linux:
     name: Build Linux
     needs: create-release
@@ -243,7 +226,7 @@ jobs:
           asset_content_type: application/octet-stream
 
   build-macos-intel:
-    name: Build macOS (Intel)
+    name: Build macOS Intel
     needs: create-release
     runs-on: macos-13
     steps:
