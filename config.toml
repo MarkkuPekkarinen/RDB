@@ -1,0 +1,67 @@
+# RDB Configuration File
+
+[server]
+host = "127.0.0.1"
+port = 8080
+workers = 4  # Number of worker threads for async runtime
+
+[database]
+# Default database name
+default_db = "main"
+# Data directory (absolute or relative to executable)
+data_dir = "./data"
+
+[storage]
+# Page size in bytes (must be power of 2)
+page_size = 4096  # 4 KB
+# Buffer pool size (number of pages to cache in memory)
+buffer_pool_size = 500  # 500 pages = 2 MB default
+# Compression threshold (bytes)
+compression_threshold = 64  # Compress tuples larger than this
+
+[cache]
+# Enable query result caching
+enable_query_cache = true
+# Query cache size (number of cached query results)
+query_cache_size = 1000
+# Query cache TTL in seconds (0 = no expiration)
+query_cache_ttl = 300  # 5 minutes
+
+[indexing]
+# B+ tree node size (number of keys per node)
+btree_node_size = 64
+# Enable auto-indexing on primary keys
+auto_index_primary_keys = true
+
+[performance]
+# Enable automatic page compaction
+auto_compact = true
+# Compact pages when free space falls below this percentage
+compact_threshold = 30  # 30% free space triggers compaction
+# Maximum batch size for bulk operations
+max_batch_size = 10000
+
+[auth]
+# Enable authentication
+enabled = true
+# JWT token expiration in seconds
+token_expiration = 86400  # 24 hours
+# Argon2 parameters
+argon2_memory_cost = 65536  # 64 MB
+argon2_time_cost = 3
+argon2_parallelism = 4
+
+[logging]
+# Log level: trace, debug, info, warn, error
+level = "info"
+# Log to file
+log_to_file = false
+log_file = "./logs/rdb.log"
+
+[limits]
+# Maximum query result size (rows)
+max_result_rows = 100000
+# Maximum query execution time (seconds)
+max_query_time = 30
+# Maximum JSON payload size (bytes)
+max_payload_size = 10485760  # 10 MB
