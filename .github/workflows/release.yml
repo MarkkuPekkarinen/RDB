@@ -24,11 +24,15 @@ jobs:
 
       - name: Generate Changelog
         id: changelog
-        uses: orhun/git-cliff-action@v2
-        with:
-          args: --latest --strip header
-        env:
-          OUTPUT: CHANGELOG.md
+        run: |
+          echo "## ✨ What's New" > changelog.md
+          if git describe --tags --abbrev=0 HEAD^ > /dev/null 2>&1; then
+            git log --pretty=format:"- %s (%h)" $(git describe --tags --abbrev=0 HEAD^)..HEAD >> changelog.md
+          else
+            git log --pretty=format:"- %s (%h)" --max-count=20 >> changelog.md
+          fi
+          content=$(cat changelog.md)
+          echo "content=$content" >> $GITHUB_OUTPUT
 
       - name: Create Release
         id: create_release
